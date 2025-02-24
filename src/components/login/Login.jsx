@@ -34,7 +34,7 @@ console.log('token',token);
 const jwt=jwtDecode(token);
 console.log('jwt',jwt);
 toast.success('Login Successfully')
-navigate('/')
+navigate('/')  
   }
 
   return (
