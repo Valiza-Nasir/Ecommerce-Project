@@ -5,6 +5,7 @@ import { ToastContainer,toast } from 'react-toastify'
 import { setEmailInLocal } from '../../utils'
 import { jwtDecode } from 'jwt-decode'
 import { GoogleLogin } from '@react-oauth/google'
+import { setTokenInLocal } from '../../utils'
 function Login() {
   const [email,setEmail] = useState('')
   const [password,setPassword] = useState('')
@@ -27,14 +28,14 @@ function Login() {
           toast.error('Login Failed')
         }
   }
-const handleSuccess=(response)=>{
-console.log('response',response);
-const token=response.credential;
-console.log('token',token);
-const jwt=jwtDecode(token);
-console.log('jwt',jwt);
-toast.success('Login Successfully')
-navigate('/')  
+   const handleSuccess=(response)=>{
+   const token=response.credential;
+    setTokenInLocal(token)
+     console.log('token',token);
+     const jwt=jwtDecode(token);
+     console.log('jwt',jwt);
+     toast.success('Login Successfully')
+     navigate('/')  
   }
 
   return (
