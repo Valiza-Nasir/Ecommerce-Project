@@ -17,7 +17,9 @@ import CartDetail from './components/cartdetail/CartDetail'
 import UserData from './components/userData/UserData'
 import SignUp from './components/signup/SignUp'
 import GoogleAuth from './components/googleauth/GoogleAuth'
-// import Login from './components/login/Login'
+import ConfirmEmail from './components/forgetpassword/ConfirmEmail'
+import ResetPassword from './components/forgetpassword/ResetPassword'
+import EnhancedTable from './commoncomponents/table/TableComponent'
 function App() {
 
   return (
@@ -38,9 +40,13 @@ function App() {
         <Route path='/mendetail/:id' element={<MenDetail/>}/>
         <Route path='/womenfront' element={<WomenFront/>}/>
         <Route path='/womendetail/:id' element={<WomenDetail/>}/>
-        <Route path='/cartdetail' element={<CartDetail/>}/>
+        {/* <Route path='/cartdetail' element={<CartDetail/>}/>
+         */}
+        <Route path='/cartdetail' element={<EnhancedTable />}/>
         <Route path='/userdata' element={<UserData />}/>
-
+        <Route path='/confirm-email' element={<ConfirmEmail />}/>
+        <Route path='/reset-password' element={<ResetPassword />}/>
+        {/* <Route path='/practicecart' element={<PracticeCart />}/> */}
       </Routes>
       </BrowserRouter>
       </Provider>

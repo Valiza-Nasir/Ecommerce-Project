@@ -32,7 +32,7 @@ try {
 }
 const initialState = {
   value: getDataFromLocal() || 0,
-  datas:getFromLocal()
+  datas:[],
 }
 
 export const cartSlice = createSlice({
@@ -48,45 +48,45 @@ export const cartSlice = createSlice({
      if(existingItem===-1){
       state.datas.push({...action.payload,quantity:1})
       state.value+=1
-      saveDataToLocal(state.value)
+      // saveDataToLocal(state.value)
      }else{
-      state.datas[existingItem]={
-        ...state.datas[existingItem],
-        quantity:state.datas[existingItem].quantity+=1
-      }
+      // state.datas[existingItem]={
+      //   ...state.datas[existingItem],
+      //   quantity:state.datas[existingItem].quantity+=1
+      // }
+        state.datas[existingItem].quantity+=1
       state.value+=1
-      saveDataToLocal(state.value)
+      // saveDataToLocal(state.value)
      }  
-     saveToLocal(state.datas)    
+    //  saveToLocal(state.datas)    
    },
    deleteFunc:(state,action)=>{
     const find=state.datas.findIndex((item)=>item.id===action.payload)
     if(find!==-1){
       state.value-=state.datas[find].quantity
       state.datas=state.datas.filter((item)=>item.id!==action.payload)
-      saveDataToLocal(state.value)
-     saveToLocal(state.datas)
+      // saveDataToLocal(state.value)
+    //  saveToLocal(state.datas)
      alert('Data Deleted Successfully')
     } 
   },
    increment:(state,action)=>{
     const find=state.datas.findIndex((item)=>item.id===action.payload)
-     state.datas[find].quantity+=1;
-     state.value+=1;
-     saveDataToLocal(state.value)
-     saveToLocal(state.datas)
+    if(find!==-1){
+      state.datas[find].quantity+=1;
+      state.value+=1;
+    }
+    
+    //  saveDataToLocal(state.value)
+    //  saveToLocal(state.datas)
    },
-   decrement:(state,action)=>{
-    const find=state.datas.findIndex((item)=>item.id===action.payload)
-    if(state.datas[find].quantity>1){
-    state.datas[find].quantity-=1;
-    if(state.value>=1){
-      state.value-=1
-     }
-    }   
-     saveDataToLocal(state.value)
-     saveToLocal(state.datas)
-   }
+   decrement: (state, action) => {
+    const find = state.datas.findIndex((item) => item.id === action.payload);
+    if (find !== -1 && state.datas[find].quantity > 1) {
+      state.datas[find].quantity -= 1;
+      state.value = Math.max(0, state.value - 1);
+    }
+  }
   },
 })
 

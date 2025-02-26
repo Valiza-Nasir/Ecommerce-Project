@@ -1,78 +1,115 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteFunc,increment,decrement } from "../../features/cartSlice/cartSlice";
-
+import { viewBasket } from "../../apis/viewbasket";
+import { getTokenFromLocal } from "../../utils";
+import { deleteCart } from "../../apis/deletecartapi";
+import EnhancedTable from "../../commoncomponents/table/TableComponent";
 function CartDetail() {
-   const [page,setPage] =useState(1)
-  const selectItems = useSelector((state) => state.cart.datas);
+  const [data,setData]=useState([])
+  const [page,setPage]=useState(1)
   let limit=5;
-  let totalPages=Math.ceil(selectItems.length/5);
-  console.log('total pages',totalPages);
-  let paginatedItems=selectItems.slice((page-1)*limit,page*limit)
-  console.log('paginateditems',paginatedItems);  
+  // const selectItems = useSelector((state) => state.cart.datas);
 const dispatch=useDispatch()
- const handlePrevious=()=>{
- if(page>1){
-  setPage(page-1)
+ const fetchData=async()=>{
+  const token=getTokenFromLocal();
+  try {
+    const response=await viewBasket(token,page,limit);
+    console.log('response of api',response);
+    if(response?.cart){
+      setData(response.cart.items)
+      setTotalItems(response.cart.totalItems)
+    }
+    
+    return response.cart.items
+  } catch (error) {
+    console.log('Failed to Get Data');
+  }
  }
- }
- const handleNext=()=>{
-  setPage(page+1)
- }
+//  const handleDelete=async(id)=>{
+//   const token=getTokenFromLocal()
+// try {
+//   await deleteCart(id,token)
+//   alert('Data Deleted Successfully')
+//  const response=await viewBasket(token,page,5)
+//  if (response.cart.items.length === 0 && page > 1) {
+//   setPage(page - 1); // Go back to the previous page if no items are left
+// } else {
+//   setData(response.cart.items);
+// }
+//     // console.log('agin check backend response',updatedBasket.response.items)
+//     // dispatch(deleteFunc(id))
+//     // setData((prevData) => prevData.filter((item) => item._id !== id));
+//     // alert('Data Deleted Successfully')
 
-
+// } catch (error) {
+//   console.log('Failed to delete Product'); 
+// }
+//  }
+ useEffect(()=>{
+ fetchData();
+ },[page])
   return (
     <>
-    <div className="max-w-6xl mx-auto p-6">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Shopping Cart</h2>
-      {selectItems.length > 0 ? (
+    <EnhancedTable/>
+     {/* <div className="max-w-6xl mx-auto p-6">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Shopping Cart</h2>
+      {data.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="w-full border border-gray-300 shadow-lg">
+          <table className="w-full bg-white border border-gray-200 shadow-md rounded-lg">
             <thead>
               <tr className="bg-gray-200 text-gray-700 uppercase text-sm">
-                <th className="p-3 border">ID</th>
-                <th className="p-3 border">Image</th>
-                <th className="p-3 border">Title</th>
-                <th className="p-3 border">Price</th>
-                <th className="p-3 border">Total</th>
-                <th className="p-3 border">-</th>
-                <th className="p-3 border">Quantity</th>
-                <th className="p-3 border">+</th>
-                <th className="p-3 border">ACTIONS</th>
+                <th className="p-4 border">Image</th>
+                <th className="p-4 border">Title</th>
+                <th className="p-4 border">Price</th>
+                <th className="p-4 border">Total</th>
+                <th className="p-4 border">Quantity</th>
+                <th className="p-4 border">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {selectItems.map((item) => (
-                <tr key={item.id} className="text-center border-b hover:bg-gray-100">
-                  <td className="p-3 border">{item.id}</td>
-                  <td className="p-3 border">
-                    <img src={item.image} alt={item.title} className="w-16 h-16 object-contain mx-auto" />
-                  </td>
-                  <td className="p-3 border">{item.title}</td>
-                  <td className="p-3 border text-green-600 font-semibold">${item.price}</td>
-                  <td className="p-3 border text-blue-600 font-semibold">
-                    ${(item.price * item.quantity).toFixed(2)}
-                  </td>
-                 
-                  <td className="p-3 border">
-                    <button className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition" onClick={()=>dispatch(decrement(item.id))}>
-                      -
-                    </button>
-                  </td>
-                  <td className="p-3 border">{item.quantity}</td>
-
-                  <td className="p-3 border">
-                    <button className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition" onClick={()=>dispatch(increment(item.id))}>
-                      +
-                    </button>
-                  </td>
-                  <td className="p-3 border">
-                    <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition" onClick={()=>dispatch(deleteFunc(item.id))}>
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
+            {data.map((item) => {
+  if (!item.productId) return null;
+  return (
+    <tr key={item._id} className="text-center border-b hover:bg-gray-100">
+      <td className="p-4 border">
+        <img
+          src={item.productId.image}
+          alt={item.productId.title}
+          className="w-16 h-16 object-cover mx-auto rounded"
+        />
+      </td>
+      <td className="p-4 border font-semibold">{item.productId.title}</td>
+      <td className="p-4 border text-green-600 font-semibold">${item.productId.price}</td>
+      <td className="p-4 border text-blue-600 font-semibold">
+        ${(item.productId.price * item.quantity).toFixed(2)}
+      </td>
+      <td className="p-4 border flex justify-center items-center gap-3">
+        <button
+          className="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"
+          onClick={() => dispatch(decrement(item._id))}
+        >
+          -
+        </button>
+        <span className="text-lg font-semibold">{item.quantity}</span>
+        <button
+          className="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"
+          onClick={() => dispatch(increment(item._id))}
+        >
+          +
+        </button>
+      </td>
+      <td className="p-4 border">
+        <button
+          className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+          onClick={() => handleDelete(item._id)}
+        >
+          DELETE
+        </button>
+      </td>
+    </tr>
+  );
+})}
             </tbody>
           </table>
         </div>
@@ -80,26 +117,19 @@ const dispatch=useDispatch()
         <p className="text-center text-lg text-gray-600 mt-6">Your cart is empty.</p>
       )}
     </div>
-    <div className="flex justify-end p-6 me-16 gap-5 items-center">
-  <button 
-    className={`px-2 py-2 text-white transition 
-      ${page === 1 ? "bg-gray-900 cursor-not-allowed opacity-50" : "bg-black hover:bg-gray-800"}`} 
-    onClick={handlePrevious} 
-    disabled={page === 1}
-  >Previous</button>
-  <p className="text-2xl font-bold">{page}</p>
- <button 
-    className={`px-2 py-2 text-white transition 
-      ${page === totalPages ? "bg-gray-900 cursor-not-allowed opacity-50" : "bg-black hover:bg-gray-800"}`} 
-    onClick={handleNext} 
-    disabled={page === totalPages}
-  >Next
-  </button>
-</div>
+    <div className="flex justify-end me-[120px] gap-4 items-center">
+      <button className={`bg-blue-600 text-white px-4 py-2 rounded ${page===1?'cursor-not-allowed opacity-50':'cursor-pointer'}`} disabled={page===1}>Pre</button>
+      <p className="font-bold text-2xl" >{page}</p>
+      <button className="bg-blue-600 text-white px-4 py-2 rounded" >Next</button>
 
-    <div className="flex justify-end p-6 me-16">
-      <button className="bg-red-600 text-white text-lg font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-red-700 transition">SubTotal : ${selectItems && selectItems.reduce((accumulator,value)=>accumulator+value.quantity*value.price,0).toFixed(3)}</button>
     </div>
+   <div className="flex justify-end mt-4 me-[120px]">
+  <button className="bg-red-600 text-white px-4 py-2 rounded">
+    Subtotal: $
+    {data.reduce((accumulator, item) => accumulator + item.quantity * item.productId.price, 0).toFixed(2)}
+  </button>
+</div> */}
+
     </>
   );
 }

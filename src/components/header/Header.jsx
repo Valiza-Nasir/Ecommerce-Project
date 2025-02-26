@@ -16,6 +16,7 @@ function Header() {
    navigate('/signup')
   }
   const handleDetail=()=>{
+    // navigate('/cartdetail')
     navigate('/cartdetail')
   }
   const handleLogout=()=>{

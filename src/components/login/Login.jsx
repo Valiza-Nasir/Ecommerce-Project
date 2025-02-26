@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { login } from '../../apis/const'
-import { useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { ToastContainer,toast } from 'react-toastify'
 import { setEmailInLocal } from '../../utils'
 import { jwtDecode } from 'jwt-decode'
@@ -45,7 +45,16 @@ function Login() {
       <form onSubmit={handleSubmit}>
       <h1 className='text-2xl text-blue-800'>Login</h1><br/>
       <input type="email" placeholder='Email Address'  className='px-8 py-2 border-2 border-black' value={email} onChange={(e)=>setEmail(e.target.value)}/><br/><br/>
-      <input type="password" placeholder='Password'  className='px-8 py-2 border-2 border-black' value={password} onChange={(e)=>setPassword(e.target.value)} /><br/><br/>
+      <input type="password" placeholder='Password'  className='px-8 py-2 border-2 border-black' value={password} onChange={(e)=>setPassword(e.target.value)} />
+      <div className="text-right mt-2">
+       <NavLink 
+    to="/confirm-email" 
+    className="text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out"
+  >
+    Forgot Password?
+  </NavLink>
+</div>
+      <br/>
       <GoogleLogin
         onSuccess={handleSuccess}
         onError={() => {
