@@ -13,7 +13,7 @@ function Login() {
   const handleSubmit=async(e)=>{
     e.preventDefault();
     if(!email || !password){
-      toast.error('please fill all fields')
+      toast.error('please fill all fields')          
       return;
     }
      const userData={email,password, provider: "email"}
@@ -28,14 +28,18 @@ function Login() {
           toast.error('Login Failed')
         }
   }
-   const handleSuccess=(response)=>{
+   const handleSuccess=async(response)=>{
    const token=response.credential;
-    setTokenInLocal(token)
-     console.log('token',token);
-     const jwt=jwtDecode(token);
-     console.log('jwt',jwt);
-     toast.success('Login Successfully')
-     navigate('/')  
+     const data={token,provider:'google'}
+     try {
+      await login(data)
+      toast.success('Login Successfully')
+      setTimeout(() => {
+       navigate('/')  
+      }, 1000);
+     } catch (error) {
+      toast.error('Login Failed')
+     }
   }
 
   return (

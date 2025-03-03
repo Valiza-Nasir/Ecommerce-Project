@@ -13,7 +13,7 @@ function Header() {
   const[showLogout,setShowLogout] = useState(false)
   const value=useSelector((state)=>state.cart.value)  
   const handleClick=()=>{
-   navigate('/signup')
+   navigate('/signup')  
   }
   const handleDetail=()=>{
     // navigate('/cartdetail')
@@ -24,6 +24,9 @@ function Header() {
     toast.success('Logout Successfully')
     setToken(null)
     navigate('/')
+  }
+  const handleSign=()=>{
+    navigate('/login')
   }
   useEffect(()=>{
    const getToken=getTokenFromLocal();
@@ -57,8 +60,9 @@ function Header() {
         </Avatar>}
         {showLogout && (<button className="absolute left-1/2 transform -translate-x-1/2 mt-2 bg-blue-950 text-white text-sm rounded-full px-4 py-1 shadow-md" onClick={handleLogout}>LOGOUT</button>)}
       </div>
-      
-      {!token &&( <button className='text-sm bg-blue-950 text-white rounded-full px-4 py-1' onClick={handleClick}>SIGNUP</button>) }
+      <button className='text-sm bg-green-800 text-white rounded-full px-4 py-1' onClick={handleSign}>SIGN IN</button>
+
+      {!token &&( <button className='text-sm bg-blue-800 text-white rounded-full px-4 py-1' onClick={handleClick}>SIGNUP</button>) }
       <ToastContainer position='top-left' autoClose={4000} />
       <div className="relative">
       <FaShoppingCart className="text-black text-4xl cursor-pointer"onClick={handleDetail}/>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { GoogleOAuthProvider } from '@react-oauth/google'
+
 import Login from '../login/Login'
 function GoogleAuth() {
   return (
@@ -12,4 +12,4 @@ function GoogleAuth() {
   )
 }
 
-export default GoogleAuth
+export default GoogleAuth           

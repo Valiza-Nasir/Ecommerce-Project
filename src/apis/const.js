@@ -22,7 +22,7 @@ export const signUp=async(data)=>{
 export const login=async(data)=>{
   try {
     const response=await axios.post(`${BASE_URL}api/login`,data);
-   setTokenInLocal(response.data.token)
+    setTokenInLocal(response.data.token)
     console.log('response',response.data);
     return response.data;
   } catch (error) {
@@ -30,8 +30,6 @@ export const login=async(data)=>{
     throw error
   }
 }
-
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YmIxMjcwN2EzYTBmOWE4NjRjMDAzNCIsImVtYWlsIjoieWFzbWVlbkBnbWFpbC5jb20iLCJpYXQiOjE3NDAzMTMzMDIsImV4cCI6MTc0MDMxNjkwMn0.4jxWiqLQEyQ_574NGgbm8k4pBZNvSY2jrX0XVX-pBK0"
 
 
 
